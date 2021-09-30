@@ -1,0 +1,11 @@
+name: Molynsi
+version: '${project.version}'
+main: me.adelemphii.molynsi.Molynsi
+api-version: 1.13
+description: Molynsi is a simple "Infection" minigame where certain players are tasked to spread an illness among other players.
+author: Adelemphii
+
+commands:
+  molynsi:
+    description: The base command for all commands in this plugin
+    usage: "§cUsage: §f/molysni"
