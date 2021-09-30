@@ -39,8 +39,10 @@ public class InfectionManager {
     }
 
     // TODO: This whole setup is JANK as fuck and there's a weird flickering when I join the server, pls fix
+    //  Should also move this to a scoreboard manager and not InfectionManager..
     private void createScoreBoard() {
         scoreboardManager = plugin.getServer().getScoreboardManager();
+        assert scoreboardManager != null;
         scoreboard = scoreboardManager.getNewScoreboard();
         objective = scoreboard.registerNewObjective("InfectionManager", "dummy",
                 ChatColor.translateAlternateColorCodes('&', "&5&l<< &d&lPlayer List &5&l>>"));
