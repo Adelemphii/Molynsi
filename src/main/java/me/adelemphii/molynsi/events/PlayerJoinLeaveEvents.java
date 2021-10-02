@@ -36,7 +36,5 @@ public class PlayerJoinLeaveEvents implements Listener {
             plugin.addUser(newUser);
             plugin.getLogger().info("Registered " + event.getPlayer().getName() + "'s user profile.");
         }
-
-        //plugin.displayManager.createScoreBoard(event.getPlayer());
     }
 }

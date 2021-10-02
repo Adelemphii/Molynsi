@@ -1,5 +1,7 @@
 package me.adelemphii.molynsi.utils;
 
+import fr.minuskube.netherboard.Netherboard;
+import fr.minuskube.netherboard.bukkit.BPlayerBoard;
 import me.adelemphii.molynsi.Molynsi;
 import me.adelemphii.molynsi.utils.player.User;
 import org.bukkit.Bukkit;
@@ -22,46 +24,29 @@ public class DisplayManager {
     int turnedInfected;
     int totalPlayers;
 
+    Team aliveTeam;
+    Team turnedTeam;
+    Team deadTeam;
 
-    ScoreboardManager scoreboardManager;
-    Scoreboard scoreboard;
-    Objective objective;
     BukkitTask updateScoreboard;
 
     public DisplayManager(Molynsi plugin) {
         this.plugin = plugin;
         this.userMap = plugin.getUsers();
 
+        Scoreboard sb = Bukkit.getScoreboardManager().getMainScoreboard();
+        if(sb.getTeam("aliveTeam") == null) aliveTeam = sb.registerNewTeam("aliveTeam");
+        else aliveTeam = sb.getTeam("aliveTeam");
+        if(sb.getTeam("turnedTeam") == null) turnedTeam = sb.registerNewTeam("turnedTeam");
+        else turnedTeam = sb.getTeam("turnedTeam");
+        if(sb.getTeam("deadTeam") == null) deadTeam = sb.registerNewTeam("deadTeam");
+        else deadTeam = sb.getTeam("deadTeam");
+
+        aliveTeam.setPrefix(ChatColor.GREEN + "");
+        turnedTeam.setPrefix(ChatColor.RED + "");
+        deadTeam.setPrefix(ChatColor.GRAY + "");
+
         startRunnable();
-    }
-
-    // TODO: This whole setup is JANK as fuck and there's a weird flickering when I join the server, pls fix
-    public void createScoreBoard(Player player) {
-        scoreboardManager = plugin.getServer().getScoreboardManager();
-        assert scoreboardManager != null;
-        scoreboard = scoreboardManager.getNewScoreboard();
-        objective = scoreboard.registerNewObjective("InfectionManager", "dummy",
-                ChatColor.translateAlternateColorCodes('&', "&5&l<< &d&lPlayer List &5&l>>"));
-
-        objective.setDisplaySlot(DisplaySlot.SIDEBAR);
-
-        Score totalPlayersDisplay = objective.getScore(ChatColor.AQUA + "» Total Players");
-        totalPlayersDisplay.setScore(15);
-
-        Team totalPlayersTeam = scoreboard.registerNewTeam("totalPlayers");
-        totalPlayersTeam.addEntry(ChatColor.BLACK + "" + ChatColor.WHITE);
-        if(totalPlayers == 0) totalPlayersTeam.setPrefix(ChatColor.AQUA + "0/");
-        else totalPlayersTeam.setPrefix(ChatColor.AQUA + "" + totalPlayers);
-
-        objective.getScore(ChatColor.BLACK + "" + ChatColor.WHITE).setScore(14);
-
-        player.setScoreboard(scoreboard);
-    }
-
-    private void updateScoreboard(Player player) {
-        Scoreboard scoreboard = player.getScoreboard();
-        // TODO: its null idk man i dont care anymore do this later ig
-        scoreboard.getTeam("totalPlayers").setPrefix(ChatColor.AQUA + "" + totalPlayers);
     }
 
     private void startRunnable() {
@@ -86,8 +71,51 @@ public class DisplayManager {
             turnedInfected = tempTurnedCount.get();
             totalPlayers = tempTotalCount.get();
 
-            Bukkit.getOnlinePlayers().forEach(this::updateScoreboard);
+            Bukkit.getOnlinePlayers().forEach(player -> {
+                this.createScoreBoard(player);
+                this.updatePlayerTeam(player);
+            });
 
-        }, 0, 400);
+        }, 0, 200);
+    }
+
+    public void createScoreBoard(Player player) {
+        BPlayerBoard board = Netherboard.instance().getBoard(player);
+        if(board == null){
+            board = Netherboard.instance().createBoard(player,
+                    ChatColor.translateAlternateColorCodes('&', "&5&l<< &d&lPlayer List &5&l>>"));
+        }
+
+        board.set(" ", 5);
+        board.set(ChatColor.AQUA + "» Total Players: " + totalPlayers, 4);
+        board.set(ChatColor.AQUA + "» Alive Players: " + alivePlayersAmount, 3);
+        board.set(ChatColor.AQUA + "» Dead Players: " + deadPlayersAmount, 2);
+        board.set(ChatColor.AQUA + "» Turned Players: " + turnedInfected, 1);
+
+
+
+    }
+
+    private void updatePlayerTeam(Player player) {
+        plugin.getUsers().forEach((integer, user) -> {
+            if(user.getUuid().equals(player.getUniqueId().toString())) {
+                if(user.isTurned()) {
+                    turnedTeam.addEntry(player.getName());
+                    player.setPlayerListName(ChatColor.RED + player.getDisplayName());
+                    player.setDisplayName(ChatColor.RED + player.getDisplayName());
+                }
+                else if(user.isAlive()) {
+                    aliveTeam.addEntry(player.getName());
+                    player.setPlayerListName(ChatColor.GREEN + player.getDisplayName());
+                    player.setDisplayName(ChatColor.GREEN + player.getDisplayName());
+                }
+                else {
+                    deadTeam.addEntry(player.getName());
+                    player.setPlayerListName(ChatColor.GRAY + player.getDisplayName());
+                    player.setDisplayName(ChatColor.GRAY + player.getDisplayName());
+                }
+            }
+        });
+
     }
 }

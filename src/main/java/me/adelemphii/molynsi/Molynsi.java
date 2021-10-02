@@ -49,10 +49,8 @@ public final class Molynsi extends JavaPlugin {
         // END SQL CONNECTION/COLLECTION
 
         infectionManager = new InfectionManager(this);
+        displayManager = new DisplayManager(this);
 
-        // TODO: check displayManager class
-        //displayManager = new DisplayManager(this);
-        //Bukkit.getOnlinePlayers().forEach(player -> displayManager.createScoreBoard(player));
     }
 
     @Override
@@ -74,5 +72,9 @@ public final class Molynsi extends JavaPlugin {
 
     public void setUsers(Map<Integer, User> users) {
         this.users = users;
+    }
+
+    public DisplayManager getDisplayManager() {
+        return displayManager;
     }
 }

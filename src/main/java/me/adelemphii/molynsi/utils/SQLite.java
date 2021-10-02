@@ -105,11 +105,7 @@ public class SQLite {
 
                     ps.setFloat(9, user.getSpeed());
                     ps.executeUpdate();
-
-                    plugin.getLogger().info("Successfully saved user " + user.getUuid() + " to database.");
                 } catch(SQLException e) {
-                    System.out.println(e.getMessage());
-                    plugin.getLogger().log(Level.SEVERE, "Failed to save to Player Table in Database: It likely already exists, updating table.");
                     updatePlayerInTable(user);
                 }
             });
@@ -133,11 +129,7 @@ public class SQLite {
 
                     ps.setFloat(9, user.getSpeed());
                     ps.executeUpdate();
-
-                    plugin.getLogger().info("Successfully saved user " + user.getUuid() + " to database.");
                 } catch(SQLException e) {
-                    System.out.println(e.getMessage());
-                    plugin.getLogger().log(Level.SEVERE, "Failed to save to Player Table in Database.");
                     updatePlayerInTable(user);
                 }
             });
@@ -173,7 +165,6 @@ public class SQLite {
                 ps.setInt(9, user.getId());
                 ps.executeUpdate();
 
-                plugin.getLogger().info("Successfully updated user " + user.getUuid() + " to database.");
             } catch(SQLException e) {
                 System.out.println(e.getMessage());
                 plugin.getLogger().log(Level.SEVERE, "Failed to update Player Table in Database.");
@@ -197,7 +188,6 @@ public class SQLite {
                 ps.setInt(9, user.getId());
                 ps.executeUpdate();
 
-                plugin.getLogger().info("Successfully updated user " + user.getUuid() + " in database.");
             } catch(SQLException e) {
                 System.out.println(e.getMessage());
                 plugin.getLogger().log(Level.SEVERE, "Failed to save to Player Table in Database.");
