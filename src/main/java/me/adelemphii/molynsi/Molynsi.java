@@ -2,7 +2,8 @@ package me.adelemphii.molynsi;
 
 import me.adelemphii.molynsi.events.PlayerJoinLeaveEvents;
 import me.adelemphii.molynsi.infection.InfectionManager;
-import me.adelemphii.molynsi.utils.CommandManager;
+import me.adelemphii.molynsi.commands.CommandManager;
+import me.adelemphii.molynsi.utils.DisplayManager;
 import me.adelemphii.molynsi.utils.SQLite;
 import me.adelemphii.molynsi.utils.player.User;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -20,6 +21,7 @@ public final class Molynsi extends JavaPlugin {
     Map<Integer, User> users = new HashMap<>();
 
     InfectionManager infectionManager;
+    public DisplayManager displayManager;
 
     @Override
     public void onEnable() {
@@ -47,6 +49,10 @@ public final class Molynsi extends JavaPlugin {
         // END SQL CONNECTION/COLLECTION
 
         infectionManager = new InfectionManager(this);
+
+        // TODO: check displayManager class
+        //displayManager = new DisplayManager(this);
+        //Bukkit.getOnlinePlayers().forEach(player -> displayManager.createScoreBoard(player));
     }
 
     @Override

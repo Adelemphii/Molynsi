@@ -19,7 +19,7 @@ public class HelpCommand implements BasicCommand {
                         "         &5&lMolynsi&r &7" +
                         "\n" +
                         "\n   &a&l+ &d/molynsi border set <size> -&f Set the border size" +
-                        "\n   &a&l+ &d/molynsi border <user> <size> (CONSOLE ONLY) -&f Set the border center and size" +
+                        "\n   &a&l+ &d/molynsi border <user> <size> (CONSOLE ONLY) -&Set the border center and size based on location of a player" +
                         "\n   &a&l+ &d/molynsi border reset -&f Reset the border size"));
         sender.sendMessage("");
         return true;

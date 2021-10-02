@@ -4,6 +4,7 @@ import me.adelemphii.molynsi.commands.interfaces.AdvancedCommand;
 import me.adelemphii.molynsi.utils.ChatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Sound;
 import org.bukkit.WorldBorder;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -29,7 +30,18 @@ public class BorderCommand implements AdvancedCommand {
 
     @Override
     public void runSubHelp(CommandSender sender) {
-        // TODO: make a mini help command here
+        if(sender instanceof Player) {
+            Player player = (Player) sender;
+            player.playSound(player.getLocation(), Sound.BLOCK_STONE_BUTTON_CLICK_ON, 1, 1);
+        }
+        sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
+                "\n" +
+                        "         &5&lMolynsi Border&r &7" +
+                        "\n" +
+                        "\n   &a&l+ &d/molynsi border set <size> -&f Set the border size" +
+                        "\n   &a&l+ &d/molynsi border <user> <size> (CONSOLE ONLY) -&f Set the border center and size based on location of a player" +
+                        "\n   &a&l+ &d/molynsi border reset -&f Reset the border size"));
+        sender.sendMessage("");
     }
 
     private boolean runConsoleCommand(CommandSender sender, String[] args) {

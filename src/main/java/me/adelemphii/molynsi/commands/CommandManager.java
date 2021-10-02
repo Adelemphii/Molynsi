@@ -1,7 +1,5 @@
-package me.adelemphii.molynsi.utils;
+package me.adelemphii.molynsi.commands;
 
-import me.adelemphii.molynsi.commands.BorderCommand;
-import me.adelemphii.molynsi.commands.HelpCommand;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
