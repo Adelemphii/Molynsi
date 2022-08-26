@@ -4,6 +4,8 @@ import fr.minuskube.netherboard.Netherboard;
 import fr.minuskube.netherboard.bukkit.BPlayerBoard;
 import me.adelemphii.molynsi.Molynsi;
 import me.adelemphii.molynsi.utils.player.User;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -16,35 +18,38 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class DisplayManager {
 
-    Molynsi plugin;
+    private final Molynsi plugin;
 
-    Map<Integer, User> userMap;
-    int alivePlayersAmount;
-    int deadPlayersAmount;
-    int turnedInfected;
-    int totalPlayers;
+    private final Map<UUID, User> userMap;
+    private int alivePlayersAmount;
+    private int deadPlayersAmount;
+    private int turnedInfected;
+    private int totalPlayers;
 
-    Team aliveTeam;
-    Team turnedTeam;
-    Team deadTeam;
+    private final Team aliveTeam;
+    private final Team turnedTeam;
+    private final Team deadTeam;
 
     BukkitTask updateScoreboard;
 
     public DisplayManager(Molynsi plugin) {
         this.plugin = plugin;
-        this.userMap = plugin.getUsers();
+        this.userMap = plugin.getUserManager().getUsers();
 
         Scoreboard sb = Bukkit.getScoreboardManager().getMainScoreboard();
-        if(sb.getTeam("aliveTeam") == null) aliveTeam = sb.registerNewTeam("aliveTeam");
-        else aliveTeam = sb.getTeam("aliveTeam");
-        if(sb.getTeam("turnedTeam") == null) turnedTeam = sb.registerNewTeam("turnedTeam");
-        else turnedTeam = sb.getTeam("turnedTeam");
-        if(sb.getTeam("deadTeam") == null) deadTeam = sb.registerNewTeam("deadTeam");
-        else deadTeam = sb.getTeam("deadTeam");
+        aliveTeam = sb.getTeam("aliveTeam") != null
+                ? sb.getTeam("aliveTeam") : sb.registerNewTeam("aliveTeam");
+        turnedTeam = sb.getTeam("turnedTeam") != null
+                ? sb.getTeam("turnedTeam") : sb.registerNewTeam("turnedTeam");
+        deadTeam = sb.getTeam("deadTeam") != null
+                ? sb.getTeam("deadTeam") : sb.registerNewTeam("deadTeam");
 
-        aliveTeam.setPrefix(ChatColor.GREEN + "");
-        turnedTeam.setPrefix(ChatColor.RED + "");
-        deadTeam.setPrefix(ChatColor.GRAY + "");
+        assert aliveTeam != null;
+        aliveTeam.prefix(Component.empty().color(NamedTextColor.GREEN));
+        assert turnedTeam != null;
+        turnedTeam.prefix(Component.empty().color(NamedTextColor.RED));
+        assert deadTeam != null;
+        deadTeam.prefix(Component.empty().color(NamedTextColor.GRAY));
 
         startRunnable();
     }
@@ -57,7 +62,7 @@ public class DisplayManager {
             AtomicInteger tempTurnedCount = new AtomicInteger();
             AtomicInteger tempTotalCount = new AtomicInteger();
             userMap.forEach((integer, user) -> {
-                if(Bukkit.getPlayer(UUID.fromString(user.getUuid())) != null) {
+                if(Bukkit.getPlayer(user.getUuid()) != null) {
                     tempTotalCount.getAndIncrement();
 
                     if (user.isAlive()) tempAliveCount.getAndIncrement();
@@ -97,22 +102,20 @@ public class DisplayManager {
     }
 
     private void updatePlayerTeam(Player player) {
-        plugin.getUsers().forEach((integer, user) -> {
-            if(user.getUuid().equals(player.getUniqueId().toString())) {
+        plugin.getUserManager().getUsers().forEach((integer, user) -> {
+            if(user.getUuid().equals(player.getUniqueId())) {
                 if(user.isTurned()) {
                     turnedTeam.addEntry(player.getName());
-                    player.setPlayerListName(ChatColor.RED + player.getDisplayName());
-                    player.setDisplayName(ChatColor.RED + player.getDisplayName());
-                }
-                else if(user.isAlive()) {
+                    player.playerListName(player.displayName().color(NamedTextColor.RED));
+                    player.displayName(player.displayName().color(NamedTextColor.RED));
+                } else if(user.isAlive()) {
                     aliveTeam.addEntry(player.getName());
-                    player.setPlayerListName(ChatColor.GREEN + player.getDisplayName());
-                    player.setDisplayName(ChatColor.GREEN + player.getDisplayName());
-                }
-                else {
+                    player.playerListName(player.displayName().color(NamedTextColor.GREEN));
+                    player.displayName(player.displayName().color(NamedTextColor.GREEN));
+                } else {
                     deadTeam.addEntry(player.getName());
-                    player.setPlayerListName(ChatColor.GRAY + player.getDisplayName());
-                    player.setDisplayName(ChatColor.GRAY + player.getDisplayName());
+                    player.playerListName(player.displayName().color(NamedTextColor.GRAY));
+                    player.displayName(player.displayName().color(NamedTextColor.GRAY));
                 }
             }
         });

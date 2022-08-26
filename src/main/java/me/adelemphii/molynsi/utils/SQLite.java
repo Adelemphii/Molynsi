@@ -4,10 +4,9 @@ import me.adelemphii.molynsi.Molynsi;
 import me.adelemphii.molynsi.utils.player.User;
 
 import java.sql.*;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
+import java.util.UUID;
 import java.util.logging.Level;
 
 public class SQLite {
@@ -84,20 +83,20 @@ public class SQLite {
         String sql = "INSERT INTO players(id,uuid,alive,infected,turned,timeInfected,statsApplied,maxHealth,speed) " +
                 "VALUES(?,?,?,?,?,?,?,?,?)";
 
-        Map<Integer, User> users = plugin.getUsers();
+        Map<UUID, User> users = plugin.getUserManager().getUsers();
 
         if(isConnected()) {
             users.forEach((integer, user) -> {
                 try(PreparedStatement ps = connection.prepareStatement(sql)) {
-                    ps.setInt(1, user.getId());
-                    ps.setString(2, user.getUuid());
+                    ps.setString(1, user.getUuid().toString());
+                    ps.setString(2, user.getUuid().toString());
 
                     ps.setBoolean(3, user.isAlive());
                     ps.setBoolean(4, user.isInfected());
                     ps.setBoolean(5, user.isTurned());
 
                     long secondsSinceUnix = 0;
-                    if(user.getTimeInfected() != null) secondsSinceUnix = (user.getTimeInfected().getTime() / 1000);
+                    if(user.getTimeInfected() != null) secondsSinceUnix = (user.getTimeInfected() / 1000);
                     ps.setLong(6, secondsSinceUnix);
 
                     ps.setBoolean(7, user.isStatsApplied());
@@ -113,15 +112,15 @@ public class SQLite {
             this.connect();
             users.forEach((integer, user) -> {
                 try(PreparedStatement ps = connection.prepareStatement(sql)) {
-                    ps.setInt(1, user.getId());
-                    ps.setString(2, user.getUuid());
+                    ps.setString(1, user.getUuid().toString());
+                    ps.setString(2, user.getUuid().toString());
 
                     ps.setBoolean(3, user.isAlive());
                     ps.setBoolean(4, user.isInfected());
                     ps.setBoolean(5, user.isTurned());
 
                     long secondsSinceUnix = 0;
-                    if(user.getTimeInfected() != null) secondsSinceUnix = (user.getTimeInfected().getTime() / 1000);
+                    if(user.getTimeInfected() != null) secondsSinceUnix = (user.getTimeInfected() / 1000);
                     ps.setLong(6, secondsSinceUnix);
 
                     ps.setBoolean(7, user.isStatsApplied());
@@ -149,20 +148,20 @@ public class SQLite {
 
         if(isConnected()) {
             try(PreparedStatement ps = connection.prepareStatement(updateSQL)) {
-                ps.setString(1, user.getUuid());
+                ps.setString(1, user.getUuid().toString());
                 ps.setBoolean(2, user.isAlive());
 
                 ps.setBoolean(3, user.isInfected());
                 ps.setBoolean(4, user.isTurned());
 
                 long secondsSinceUnix = 0;
-                if(user.getTimeInfected() != null) secondsSinceUnix = (user.getTimeInfected().getTime() / 1000);
+                if(user.getTimeInfected() != null) secondsSinceUnix = (user.getTimeInfected() / 1000);
                 ps.setLong(5, secondsSinceUnix);
 
                 ps.setBoolean(6, user.isStatsApplied());
                 ps.setDouble(7, user.getMaxHealth());
                 ps.setFloat(8, user.getSpeed());
-                ps.setInt(9, user.getId());
+                ps.setString(9, user.getUuid().toString());
                 ps.executeUpdate();
 
             } catch(SQLException e) {
@@ -172,20 +171,20 @@ public class SQLite {
         } else {
             this.connect();
             try(PreparedStatement ps = connection.prepareStatement(updateSQL)) {
-                ps.setString(1, user.getUuid());
+                ps.setString(1, user.getUuid().toString());
                 ps.setBoolean(2, user.isAlive());
 
                 ps.setBoolean(3, user.isInfected());
                 ps.setBoolean(4, user.isTurned());
 
                 long secondsSinceUnix = 0;
-                if(user.getTimeInfected() != null) secondsSinceUnix = (user.getTimeInfected().getTime() / 1000);
+                if(user.getTimeInfected() != null) secondsSinceUnix = (user.getTimeInfected() / 1000);
                 ps.setLong(5, secondsSinceUnix);
 
                 ps.setBoolean(6, user.isStatsApplied());
                 ps.setDouble(7, user.getMaxHealth());
                 ps.setFloat(8, user.getSpeed());
-                ps.setInt(9, user.getId());
+                ps.setString(9, user.getUuid().toString());
                 ps.executeUpdate();
 
             } catch(SQLException e) {
@@ -198,7 +197,7 @@ public class SQLite {
     public void collectAllUsersFromTable() {
         String sql = "SELECT * FROM players";
 
-        Map<Integer, User> userMap = new HashMap<>();
+        Map<UUID, User> userMap = new HashMap<>();
 
         try {
             if(isConnected()) {
@@ -208,19 +207,17 @@ public class SQLite {
                 while(rs.next()) {
 
                     User user = new User(
-                            rs.getString("uuid"),
-                            rs.getInt("id"),
+                            UUID.fromString(rs.getString("uuid")),
                             rs.getBoolean("alive"),
                             rs.getBoolean("infected"),
                             rs.getBoolean("turned"),
-                            new Date(TimeUnit.SECONDS.toMillis(rs.getLong("timeInfected"))),
+                            rs.getLong("timeInfected"),
                             rs.getBoolean("statsApplied"),
                             rs.getDouble("maxHealth"),
                             rs.getFloat("speed")
                     );
-                    userMap.put(user.getId(), user);
+                    userMap.put(user.getUuid(), user);
                 }
-                plugin.getLogger().info("Successfully collected users to hashmap.");
             } else {
                 this.connect();
                 Statement stmt  = connection.createStatement();
@@ -229,25 +226,24 @@ public class SQLite {
                 while(rs.next()) {
 
                     User user = new User(
-                            rs.getString("uuid"),
-                            rs.getInt("id"),
+                            UUID.fromString(rs.getString("uuid")),
                             rs.getBoolean("alive"),
                             rs.getBoolean("infected"),
                             rs.getBoolean("turned"),
-                            new Date(TimeUnit.SECONDS.toMillis(rs.getLong("timeInfected"))),
+                            rs.getLong("timeInfected"),
                             rs.getBoolean("statsApplied"),
                             rs.getDouble("maxHealth"),
                             rs.getFloat("speed")
                     );
-                    userMap.put(user.getId(), user);
+                    userMap.put(user.getUuid(), user);
                 }
-                plugin.getLogger().info("Successfully collected users to hashmap.");
             }
+            plugin.getLogger().info("Successfully collected users to hashmap.");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             System.out.println(":thinking_emoji:");
         }
 
-        plugin.setUsers(userMap);
+        plugin.getUserManager().setUsers(userMap);
     }
 }

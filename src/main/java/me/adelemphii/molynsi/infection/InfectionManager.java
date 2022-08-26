@@ -4,17 +4,22 @@ import me.adelemphii.molynsi.Molynsi;
 import me.adelemphii.molynsi.utils.player.User;
 
 import java.util.Map;
+import java.util.UUID;
 
 public class InfectionManager {
 
-    Molynsi plugin;
+    private final Molynsi plugin;
 
-    Map<Integer, User> userMap;
+    private Map<UUID, User> userMap;
 
     // TODO: For managing and registering stuff related to player infection
     public InfectionManager(Molynsi plugin) {
         this.plugin = plugin;
-        this.userMap = plugin.getUsers();
+        this.userMap = plugin.getUserManager().getUsers();
+    }
+
+    public boolean start() {
+        return false;
     }
 
 }

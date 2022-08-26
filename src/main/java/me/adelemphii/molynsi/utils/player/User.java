@@ -1,29 +1,27 @@
 package me.adelemphii.molynsi.utils.player;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.util.UUID;
 
 public class User implements Serializable {
 
     // Generic player info
-    String uuid;
-    int id;
+    private UUID uuid;
 
     // Custom info for infection/zombified
-    boolean alive;
-    boolean infected;
-    boolean turned;
-    Date timeInfected;
+    private boolean alive;
+    private boolean infected;
+    private boolean turned;
+    private Long timeInfected;
 
     // Custom stats for the player when infected, generated upon turning.
-    boolean statsApplied;
-    double maxHealth;
-    float speed;
+    private boolean statsApplied;
+    private double maxHealth;
+    private float speed;
 
-    public User(String uuid, int id, boolean alive, boolean infected, boolean turned,
-                Date timeInfected, boolean statsApplied, double maxHealth, float speed) {
+    public User(UUID uuid, boolean alive, boolean infected, boolean turned,
+                Long timeInfected, boolean statsApplied, double maxHealth, float speed) {
         this.uuid = uuid;
-        this.id = id;
 
         this.alive = alive;
         this.infected = infected;
@@ -36,20 +34,12 @@ public class User implements Serializable {
     }
 
     // TODO: add documentation for these methods
-    public void setUuid(String uuid) {
+    public void setUuid(UUID uuid) {
         this.uuid = uuid;
     }
 
-    public String getUuid() {
+    public UUID getUuid() {
         return uuid;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public boolean isAlive() {
@@ -76,11 +66,11 @@ public class User implements Serializable {
         this.turned = turned;
     }
 
-    public Date getTimeInfected() {
+    public Long getTimeInfected() {
         return timeInfected;
     }
 
-    public void setTimeInfected(Date timeInfected) {
+    public void setTimeInfected(Long timeInfected) {
         this.timeInfected = timeInfected;
     }
 
@@ -112,7 +102,6 @@ public class User implements Serializable {
     public String toString() {
         return "User{" +
                 "uuid='" + uuid + '\'' +
-                ", id=" + id +
                 ", alive=" + alive +
                 ", infected=" + infected +
                 ", turned=" + turned +
