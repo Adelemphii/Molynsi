@@ -12,12 +12,12 @@ import java.util.logging.Level;
 public class SQLite {
 
     private final Molynsi plugin;
+    private final String url;
     public SQLite(Molynsi plugin) {
         this.plugin = plugin;
+        url = "jdbc:sqlite:" + plugin.getDataFolder().getAbsolutePath() + "/data/players.db";
         createPlayerTable();
     }
-
-    String url = "jdbc:sqlite:/AMP/Minecraft/plugins/Molynsi/data/players.db";
     private static Connection connection;
 
     public boolean connect() {
@@ -55,17 +55,20 @@ public class SQLite {
     }
 
     private void createPlayerTable() {
-        String sql = "CREATE TABLE IF NOT EXISTS players (\n"
-                + "	id integer PRIMARY KEY,\n"
-                + "	uuid text NOT NULL,\n"
-                + " alive integer,\n"
-                + " infected integer,\n" // booleans are stored as either 0 (false) or 1 (true),
-                + " turned integer,\n"
-                + " timeInfected integer,\n" // the seconds since UNIX time
-                + " statsApplied integer,\n"
-                + " maxHealth real,\n"
-                + " speed real\n"
-                + ");";
+        // booleans are stored as either 0 (false) or 1 (true),
+        // the seconds since UNIX time
+        String sql = """
+                CREATE TABLE IF NOT EXISTS players (
+                	id integer PRIMARY KEY,
+                	uuid text NOT NULL,
+                 alive integer,
+                 infected integer,
+                 turned integer,
+                 timeInfected integer,
+                 statsApplied integer,
+                 maxHealth real,
+                 speed real
+                );""";
 
         // TODO: Work on saving/reading to this
 
@@ -83,7 +86,7 @@ public class SQLite {
         String sql = "INSERT INTO players(id,uuid,alive,infected,turned,timeInfected,statsApplied,maxHealth,speed) " +
                 "VALUES(?,?,?,?,?,?,?,?,?)";
 
-        Map<UUID, User> users = plugin.getUserManager().getUsers();
+        Map<UUID, User> users = plugin.getInfectionManager().getUsers();
 
         if(isConnected()) {
             users.forEach((integer, user) -> {
@@ -244,6 +247,6 @@ public class SQLite {
             System.out.println(":thinking_emoji:");
         }
 
-        plugin.getUserManager().setUsers(userMap);
+        plugin.getInfectionManager().setUsers(userMap);
     }
 }

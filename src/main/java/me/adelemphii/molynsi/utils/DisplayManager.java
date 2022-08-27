@@ -34,7 +34,7 @@ public class DisplayManager {
 
     public DisplayManager(Molynsi plugin) {
         this.plugin = plugin;
-        this.userMap = plugin.getUserManager().getUsers();
+        this.userMap = plugin.getInfectionManager().getUsers();
 
         Scoreboard sb = Bukkit.getScoreboardManager().getMainScoreboard();
         aliveTeam = sb.getTeam("aliveTeam") != null
@@ -81,7 +81,7 @@ public class DisplayManager {
                 this.updatePlayerTeam(player);
             });
 
-        }, 0, 200);
+        }, 0, 20L * 5L);
     }
 
     public void createScoreBoard(Player player) {
@@ -101,8 +101,8 @@ public class DisplayManager {
 
     }
 
-    private void updatePlayerTeam(Player player) {
-        plugin.getUserManager().getUsers().forEach((integer, user) -> {
+    public void updatePlayerTeam(Player player) {
+        plugin.getInfectionManager().getUsers().forEach((integer, user) -> {
             if(user.getUuid().equals(player.getUniqueId())) {
                 if(user.isTurned()) {
                     turnedTeam.addEntry(player.getName());

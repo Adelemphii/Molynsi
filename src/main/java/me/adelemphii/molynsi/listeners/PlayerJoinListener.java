@@ -1,4 +1,4 @@
-package me.adelemphii.molynsi.events;
+package me.adelemphii.molynsi.listeners;
 
 import me.adelemphii.molynsi.Molynsi;
 import me.adelemphii.molynsi.utils.player.User;
@@ -7,9 +7,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
 
 import java.util.Map;
-import java.util.Objects;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class PlayerJoinListener implements Listener {
 
@@ -20,7 +18,7 @@ public class PlayerJoinListener implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerLoginEvent event) {
-        Map<UUID, User> users = plugin.getUserManager().getUsers();
+        Map<UUID, User> users = plugin.getInfectionManager().getUsers();
         User newUser = new User(event.getPlayer().getUniqueId(),
                 true, false, false, null, false, 20, 1.0f);
 
@@ -33,7 +31,7 @@ public class PlayerJoinListener implements Listener {
         }
 
         if(!match) {
-            plugin.getUserManager().addUser(newUser);
+            plugin.getInfectionManager().addUser(newUser);
             plugin.getLogger().info("Registered " + event.getPlayer().getName() + "'s user profile.");
         }
     }

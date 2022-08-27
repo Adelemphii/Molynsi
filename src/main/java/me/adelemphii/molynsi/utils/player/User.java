@@ -33,6 +33,17 @@ public class User implements Serializable {
         this.speed = speed;
     }
 
+    public void setDefaults() {
+        alive = true;
+        infected = false;
+        turned = false;
+        timeInfected = null;
+
+        statsApplied = false;
+        maxHealth = 20;
+        speed = 1.0f;
+    }
+
     // TODO: add documentation for these methods
     public void setUuid(UUID uuid) {
         this.uuid = uuid;

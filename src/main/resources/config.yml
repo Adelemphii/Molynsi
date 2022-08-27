@@ -1,1 +1,10 @@
-hi
+debug: false
+countdown-timer: 10
+peace-time-seconds: 300
+infected-turn-time-seconds: 300
+turn-messages:
+  - "Urgh... I don't feel so well."
+  - "I crave... Flesh."
+  - "Bluurghhh...."
+infect-chance: 10
+infect-chance-during-peace: 5

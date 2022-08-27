@@ -2,11 +2,12 @@ package me.adelemphii.molynsi;
 
 import co.aikar.commands.PaperCommandManager;
 import me.adelemphii.molynsi.commands.CommandMolynsi;
-import me.adelemphii.molynsi.events.PlayerJoinListener;
+import me.adelemphii.molynsi.listeners.*;
 import me.adelemphii.molynsi.infection.InfectionManager;
+import me.adelemphii.molynsi.utils.ConfigManager;
 import me.adelemphii.molynsi.utils.DisplayManager;
 import me.adelemphii.molynsi.utils.SQLite;
-import me.adelemphii.molynsi.utils.UserManager;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.sql.Connection;
@@ -17,21 +18,19 @@ public final class Molynsi extends JavaPlugin {
     private Connection connection;
     private SQLite SQLite;
 
-    private UserManager userManager;
     private InfectionManager infectionManager;
     private DisplayManager displayManager;
+    private ConfigManager configManager;
 
     private PaperCommandManager commandManager;
 
     @Override
     public void onEnable() {
 
+        configManager = new ConfigManager(this);
         commandManager = new PaperCommandManager(this);
-        userManager = new UserManager();
+        infectionManager = new InfectionManager(this);
         saveDefaultConfig();
-
-        commandManager.registerCommand(new CommandMolynsi());
-        getServer().getPluginManager().registerEvents(new PlayerJoinListener(this), this);
 
         // START SQL CONNECTION/COLLECTION
         getLogger().info("Establishing connection to SQLite Database...");
@@ -49,7 +48,8 @@ public final class Molynsi extends JavaPlugin {
         SQLite.collectAllUsersFromTable();
         // END SQL CONNECTION/COLLECTION
 
-        infectionManager = new InfectionManager(this);
+        commandManager.registerCommand(new CommandMolynsi(this));
+        registerEvents();
         displayManager = new DisplayManager(this);
 
     }
@@ -61,6 +61,20 @@ public final class Molynsi extends JavaPlugin {
 
         if(connection != null) SQLite.disconnect();
         getLogger().info("Successfully disconnected from database.");
+    }
+
+    private void registerEvents() {
+        PluginManager pluginManager = getServer().getPluginManager();
+        pluginManager.registerEvents(new PlayerJoinListener(this), this);
+        pluginManager.registerEvents(new TurnListener(this), this);
+        pluginManager.registerEvents(new InfectListener(this), this);
+        pluginManager.registerEvents(new PlayerDeathListener(this), this);
+        pluginManager.registerEvents(new GameEndListener(this), this);
+        pluginManager.registerEvents(new PlayerDamageListener(this), this);
+    }
+
+    public ConfigManager getConfigManager() {
+        return configManager;
     }
 
     public DisplayManager getDisplayManager() {
@@ -101,9 +115,5 @@ public final class Molynsi extends JavaPlugin {
 
     public void setCommandManager(PaperCommandManager commandManager) {
         this.commandManager = commandManager;
-    }
-
-    public UserManager getUserManager() {
-        return userManager;
     }
 }
