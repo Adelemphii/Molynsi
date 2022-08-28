@@ -1,9 +1,11 @@
 package me.adelemphii.molynsi.utils.player;
 
+import tech.adelemphii.molynsiapi.player.AbstractUser;
+
 import java.io.Serializable;
 import java.util.UUID;
 
-public class User implements Serializable {
+public class User extends AbstractUser implements Serializable {
 
     // Generic player info
     private UUID uuid;
@@ -44,67 +46,81 @@ public class User implements Serializable {
         speed = 1.0f;
     }
 
-    // TODO: add documentation for these methods
-    public void setUuid(UUID uuid) {
+    protected void setUuid(UUID uuid) {
         this.uuid = uuid;
     }
 
+    @Override
     public UUID getUuid() {
         return uuid;
     }
 
+    @Override
     public boolean isAlive() {
         return alive;
     }
 
+    @Override
     public void setAlive(boolean alive) {
         this.alive = alive;
     }
 
+    @Override
     public boolean isInfected() {
         return infected;
     }
 
+    @Override
     public void setInfected(boolean infected) {
         this.infected = infected;
     }
 
+    @Override
     public boolean isTurned() {
         return turned;
     }
 
+    @Override
     public void setTurned(boolean turned) {
         this.turned = turned;
     }
 
+    @Override
     public Long getTimeInfected() {
         return timeInfected;
     }
 
+    @Override
     public void setTimeInfected(Long timeInfected) {
         this.timeInfected = timeInfected;
     }
 
-    public boolean isStatsApplied() {
+    @Override
+    public boolean areStatsApplied() {
         return statsApplied;
     }
 
+    @Override
     public void setStatsApplied(boolean statsApplied) {
         this.statsApplied = statsApplied;
     }
 
+    @Override
     public double getMaxHealth() {
         return maxHealth;
     }
 
+    @Override
     public void setMaxHealth(double maxHealth) {
         this.maxHealth = maxHealth;
     }
 
+    @Override
     public float getSpeed() {
         return speed;
     }
 
+    @Override
     public void setSpeed(float speed) {
         this.speed = speed;
     }

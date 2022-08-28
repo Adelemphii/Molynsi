@@ -101,5 +101,10 @@
             <artifactId>netherboard-bukkit</artifactId>
             <version>1.2.2</version>
         </dependency>
+        <dependency>
+            <groupId>tech.adelemphii</groupId>
+            <artifactId>MolynsiAPI</artifactId>
+            <version>1.0</version>
+        </dependency>
     </dependencies>
 </project>
