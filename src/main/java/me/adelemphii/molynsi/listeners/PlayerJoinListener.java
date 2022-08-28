@@ -11,7 +11,7 @@ import java.util.UUID;
 
 public class PlayerJoinListener implements Listener {
 
-    Molynsi plugin;
+    private final Molynsi plugin;
     public PlayerJoinListener(Molynsi plugin) {
         this.plugin = plugin;
     }
@@ -20,7 +20,7 @@ public class PlayerJoinListener implements Listener {
     public void onPlayerJoin(PlayerLoginEvent event) {
         Map<UUID, User> users = plugin.getInfectionManager().getUsers();
         User newUser = new User(event.getPlayer().getUniqueId(),
-                true, false, false, null, false, 20, 1.0f);
+                true, false, false, null);
 
         boolean match = false;
         for(User user : users.values()) {
