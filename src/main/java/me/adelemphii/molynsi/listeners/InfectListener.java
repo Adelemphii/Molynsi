@@ -2,6 +2,7 @@ package me.adelemphii.molynsi.listeners;
 
 import me.adelemphii.molynsi.Molynsi;
 import me.adelemphii.molynsi.infection.events.GameEndEvent;
+import me.adelemphii.molynsi.infection.events.InfectionPrePulseEvent;
 import me.adelemphii.molynsi.infection.events.PlayerInfectEvent;
 import me.adelemphii.molynsi.infection.events.UserDeathEvent;
 import me.adelemphii.molynsi.utils.ChatUtility;
@@ -64,28 +65,38 @@ public class InfectListener implements Listener {
                         if(nearbyUser.isInfected()) {
                             return;
                         }
-                        int chance = random.nextInt(101);
+                        int chance = random.nextInt(1, 101);
                         int needed = plugin.getConfigManager().getInfectChance();
+
                         if(plugin.getInfectionManager().isPeaceTime()) {
                             needed = plugin.getConfigManager().getInfectChanceDuringPeace();
                         }
 
-                        if(plugin.getConfigManager().isDebug()) {
-                            player.sendMessage(ChatUtility.formatDebugMessage("[INFP] Chance: " + chance));
-                            player.sendMessage(ChatUtility.formatDebugMessage("[INFP] Needed: " + needed));
-                        }
+                        InfectionPrePulseEvent infectionPrePulseEvent = new InfectionPrePulseEvent(nearby, player, nearbyUser,
+                                chance, needed);
+                        Bukkit.getPluginManager().callEvent(infectionPrePulseEvent);
 
-                        if(chance <= needed) {
+                        if(!infectionPrePulseEvent.isCancelled()) {
+                            chance = infectionPrePulseEvent.getChance();
+                            needed = infectionPrePulseEvent.getNeeded();
+
                             if(plugin.getConfigManager().isDebug()) {
-                                player.sendMessage(ChatUtility.formatDebugMessage("You have infected " + nearby.getName()));
+                                player.sendMessage(ChatUtility.formatDebugMessage("[INFP] Chance: " + chance));
+                                player.sendMessage(ChatUtility.formatDebugMessage("[INFP] Needed: " + needed));
                             }
 
-                            PlayerInfectEvent playerInfectEvent = new PlayerInfectEvent(nearby, player, nearbyUser);
-                            Bukkit.getPluginManager().callEvent(playerInfectEvent);
-                            if(!playerInfectEvent.isCancelled()) {
-                                nearbyUser.setInfected(true);
-                                nearbyUser.setTimeInfected(System.currentTimeMillis());
-                                plugin.getInfectionManager().addUser(nearbyUser);
+                            if(chance <= needed) {
+                                if(plugin.getConfigManager().isDebug()) {
+                                    player.sendMessage(ChatUtility.formatDebugMessage("You have infected " + nearby.getName()));
+                                }
+
+                                PlayerInfectEvent playerInfectEvent = new PlayerInfectEvent(nearby, player, nearbyUser);
+                                Bukkit.getPluginManager().callEvent(playerInfectEvent);
+                                if(!playerInfectEvent.isCancelled()) {
+                                    nearbyUser.setInfected(true);
+                                    nearbyUser.setTimeInfected(System.currentTimeMillis());
+                                    plugin.getInfectionManager().addUser(nearbyUser);
+                                }
                             }
                         }
                     }

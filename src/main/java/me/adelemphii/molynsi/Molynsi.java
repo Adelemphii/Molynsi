@@ -13,6 +13,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.sql.Connection;
 import java.util.logging.Level;
 
+/**
+ * Main Class of the plugin.
+ */
 public final class Molynsi extends JavaPlugin {
 
     private Connection connection;
@@ -73,47 +76,43 @@ public final class Molynsi extends JavaPlugin {
         pluginManager.registerEvents(new PlayerDamageListener(this), this);
     }
 
+    /**
+     * Get the Config Manager.
+     * @return ConfigManager
+     */
     public ConfigManager getConfigManager() {
         return configManager;
     }
 
+    /**
+     * Get the Display Manager.
+     * @return DisplayManager
+     */
     public DisplayManager getDisplayManager() {
         return displayManager;
     }
 
+    /**
+     * Get the connection to the SQLite Database.
+     * @return Connection to database
+     */
     public Connection getConnection() {
         return connection;
     }
 
-    public void setConnection(Connection connection) {
-        this.connection = connection;
-    }
-
+    /**
+     * Get the SQLite manager class.
+     * @return SQLite manager class
+     */
     public me.adelemphii.molynsi.utils.SQLite getSQLite() {
         return SQLite;
     }
 
-    public void setSQLite(me.adelemphii.molynsi.utils.SQLite SQLite) {
-        this.SQLite = SQLite;
-    }
-
+    /**
+     * Get the Infection Manager.
+     * @return InfectionManager
+     */
     public InfectionManager getInfectionManager() {
         return infectionManager;
-    }
-
-    public void setInfectionManager(InfectionManager infectionManager) {
-        this.infectionManager = infectionManager;
-    }
-
-    public void setDisplayManager(DisplayManager displayManager) {
-        this.displayManager = displayManager;
-    }
-
-    public PaperCommandManager getCommandManager() {
-        return commandManager;
-    }
-
-    public void setCommandManager(PaperCommandManager commandManager) {
-        this.commandManager = commandManager;
     }
 }

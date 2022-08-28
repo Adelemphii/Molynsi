@@ -9,6 +9,9 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Level;
 
+/**
+ * The SQLite manager for the plugin
+ */
 public class SQLite {
 
     private final Molynsi plugin;
@@ -20,6 +23,10 @@ public class SQLite {
     }
     private static Connection connection;
 
+    /**
+     * Connect to the player database.
+     * @return if connected
+     */
     public boolean connect() {
         if(!isConnected()) {
             try {
@@ -33,6 +40,10 @@ public class SQLite {
         return true;
     }
 
+    /**
+     * Disconnect from the player database.
+     * @return if disconnected
+     */
     public boolean disconnect() {
         if(isConnected()) {
             try {
@@ -45,11 +56,18 @@ public class SQLite {
         return true;
     }
 
+    /**
+     * If the database is connected.
+     * @return if connected
+     */
     public boolean isConnected() {
         return (connection != null);
     }
 
-    // getConnection
+    /**
+     * Get the connection.
+     * @return connection
+     */
     public Connection getConnection() {
         return connection;
     }
@@ -64,10 +82,7 @@ public class SQLite {
                  alive integer,
                  infected integer,
                  turned integer,
-                 timeInfected integer,
-                 statsApplied integer,
-                 maxHealth real,
-                 speed real
+                 timeInfected integer
                 );""";
 
         // TODO: Work on saving/reading to this
@@ -82,9 +97,12 @@ public class SQLite {
         }
     }
 
+    /**
+     * Save player data to the table.
+     */
     public void saveToPlayerTable() {
-        String sql = "INSERT INTO players(id,uuid,alive,infected,turned,timeInfected,statsApplied,maxHealth,speed) " +
-                "VALUES(?,?,?,?,?,?,?,?,?)";
+        String sql = "INSERT INTO players(id,uuid,alive,infected,turned,timeInfected) " +
+                "VALUES(?,?,?,?,?,?)";
 
         Map<UUID, User> users = plugin.getInfectionManager().getUsers();
 
@@ -101,11 +119,6 @@ public class SQLite {
                     long secondsSinceUnix = 0;
                     if(user.getTimeInfected() != null) secondsSinceUnix = (user.getTimeInfected() / 1000);
                     ps.setLong(6, secondsSinceUnix);
-
-                    ps.setBoolean(7, user.isStatsApplied());
-                    ps.setDouble(8, user.getMaxHealth());
-
-                    ps.setFloat(9, user.getSpeed());
                     ps.executeUpdate();
                 } catch(SQLException e) {
                     updatePlayerInTable(user);
@@ -125,11 +138,6 @@ public class SQLite {
                     long secondsSinceUnix = 0;
                     if(user.getTimeInfected() != null) secondsSinceUnix = (user.getTimeInfected() / 1000);
                     ps.setLong(6, secondsSinceUnix);
-
-                    ps.setBoolean(7, user.isStatsApplied());
-                    ps.setDouble(8, user.getMaxHealth());
-
-                    ps.setFloat(9, user.getSpeed());
                     ps.executeUpdate();
                 } catch(SQLException e) {
                     updatePlayerInTable(user);
@@ -138,15 +146,16 @@ public class SQLite {
         }
     }
 
+    /**
+     * Update player info to the table.
+     * @param user User to update
+     */
     public void updatePlayerInTable(User user) {
         String updateSQL = "UPDATE players SET uuid = ? ," +
                 "alive = ? ," +
                 "infected = ? ," +
                 "turned = ? ," +
                 "timeInfected = ? ," +
-                "statsApplied = ? ," +
-                "maxHealth = ? ," +
-                "speed = ? " +
                 "WHERE id = ?";
 
         if(isConnected()) {
@@ -161,9 +170,6 @@ public class SQLite {
                 if(user.getTimeInfected() != null) secondsSinceUnix = (user.getTimeInfected() / 1000);
                 ps.setLong(5, secondsSinceUnix);
 
-                ps.setBoolean(6, user.isStatsApplied());
-                ps.setDouble(7, user.getMaxHealth());
-                ps.setFloat(8, user.getSpeed());
                 ps.setString(9, user.getUuid().toString());
                 ps.executeUpdate();
 
@@ -184,9 +190,6 @@ public class SQLite {
                 if(user.getTimeInfected() != null) secondsSinceUnix = (user.getTimeInfected() / 1000);
                 ps.setLong(5, secondsSinceUnix);
 
-                ps.setBoolean(6, user.isStatsApplied());
-                ps.setDouble(7, user.getMaxHealth());
-                ps.setFloat(8, user.getSpeed());
                 ps.setString(9, user.getUuid().toString());
                 ps.executeUpdate();
 
@@ -197,6 +200,9 @@ public class SQLite {
         }
     }
 
+    /**
+     * Collect all the user data from the table.
+     */
     public void collectAllUsersFromTable() {
         String sql = "SELECT * FROM players";
 
@@ -214,10 +220,7 @@ public class SQLite {
                             rs.getBoolean("alive"),
                             rs.getBoolean("infected"),
                             rs.getBoolean("turned"),
-                            rs.getLong("timeInfected"),
-                            rs.getBoolean("statsApplied"),
-                            rs.getDouble("maxHealth"),
-                            rs.getFloat("speed")
+                            rs.getLong("timeInfected")
                     );
                     userMap.put(user.getUuid(), user);
                 }
@@ -233,10 +236,7 @@ public class SQLite {
                             rs.getBoolean("alive"),
                             rs.getBoolean("infected"),
                             rs.getBoolean("turned"),
-                            rs.getLong("timeInfected"),
-                            rs.getBoolean("statsApplied"),
-                            rs.getDouble("maxHealth"),
-                            rs.getFloat("speed")
+                            rs.getLong("timeInfected")
                     );
                     userMap.put(user.getUuid(), user);
                 }

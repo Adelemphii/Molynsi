@@ -8,6 +8,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Map;
 import java.util.UUID;
 
+/**
+ * Called when the game ends.
+ */
 public class GameEndEvent extends Event {
 
     private static final HandlerList HANDLERS = new HandlerList();
@@ -27,6 +30,10 @@ public class GameEndEvent extends Event {
         return HANDLERS;
     }
 
+    /**
+     * Get a map of all users who participated in the game.
+     * @return map of users.
+     */
     public Map<UUID, User> getParticipants() {
         return participants;
     }

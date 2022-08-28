@@ -7,6 +7,9 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerEvent;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Called when a player turns into an undead.
+ */
 public class PlayerTurnEvent extends PlayerEvent implements Cancellable {
 
     private static final HandlerList HANDLERS = new HandlerList();
@@ -26,6 +29,10 @@ public class PlayerTurnEvent extends PlayerEvent implements Cancellable {
         return HANDLERS;
     }
 
+    /**
+     * Get the user who is turned into an undead.
+     * @return The User who is turned
+     */
     public User getUser() {
         return user;
     }
@@ -45,6 +52,10 @@ public class PlayerTurnEvent extends PlayerEvent implements Cancellable {
         this.isCancelled = cancel;
     }
 
+    /**
+     * Get the player who caused the player to turn.
+     * @return The player who caused it - Can be NULL in case of SYSTEM selection
+     */
     public Player getCause() {
         return cause;
     }

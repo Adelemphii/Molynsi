@@ -24,6 +24,9 @@ import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * Manages the backend of the game.
+ */
 public class InfectionManager {
 
     private final Molynsi plugin;
@@ -222,9 +225,6 @@ public class InfectionManager {
                 }
                 for(User user : turned) {
                     userMap.put(user.getUuid(), user);
-
-                    plugin.getDisplayManager().updatePlayerTeam(Bukkit.getPlayer(user.getUuid()));
-                    plugin.getDisplayManager().createScoreBoard(Bukkit.getPlayer(user.getUuid()));
                 }
             }
 
@@ -263,22 +263,42 @@ public class InfectionManager {
         return null;
     }
 
+    /**
+     * Get a map of all the participating users
+     * @return Map of all users
+     */
     public Map<UUID, User> getUsers() {
         return userMap;
     }
 
+    /**
+     * Add a user to the participant map.
+     * @param user User to add
+     */
     public void addUser(User user) {
         userMap.put(user.getUuid(), user);
     }
 
+    /**
+     * Set the participant map
+     * @param users Map to set
+     */
     public void setUsers(Map<UUID, User> users) {
         this.userMap = users;
     }
 
+    /**
+     * Get the length of the game in seconds.
+     * @return Length of game in seconds.
+     */
     public long getGameTimeSeconds() {
         return gameTimeSeconds;
     }
 
+    /**
+     * Get if the game is in Peace Time
+     * @return Whether the game is in Peace Time
+     */
     public boolean isPeaceTime() {
         return peaceTime;
     }

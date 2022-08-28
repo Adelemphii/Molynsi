@@ -16,6 +16,9 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * The display manager for the in-game scoreboard
+ */
 public class DisplayManager {
 
     private final Molynsi plugin;
@@ -84,7 +87,7 @@ public class DisplayManager {
         }, 0, 20L * 5L);
     }
 
-    public void createScoreBoard(Player player) {
+    private void createScoreBoard(Player player) {
         BPlayerBoard board = Netherboard.instance().getBoard(player);
         if(board == null){
             board = Netherboard.instance().createBoard(player,
@@ -101,7 +104,7 @@ public class DisplayManager {
 
     }
 
-    public void updatePlayerTeam(Player player) {
+    private void updatePlayerTeam(Player player) {
         plugin.getInfectionManager().getUsers().forEach((integer, user) -> {
             if(user.getUuid().equals(player.getUniqueId())) {
                 if(user.isTurned()) {

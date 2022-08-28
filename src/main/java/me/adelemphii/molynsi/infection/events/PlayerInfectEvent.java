@@ -7,6 +7,9 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerEvent;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Called when a player is infected.
+ */
 public class PlayerInfectEvent extends PlayerEvent implements Cancellable {
 
     private static final HandlerList HANDLERS = new HandlerList();
@@ -26,6 +29,10 @@ public class PlayerInfectEvent extends PlayerEvent implements Cancellable {
         return HANDLERS;
     }
 
+    /**
+     * Get the user who is infected.
+     * @return The User who is infected
+     */
     public User getUser() {
         return user;
     }
@@ -45,6 +52,10 @@ public class PlayerInfectEvent extends PlayerEvent implements Cancellable {
         this.isCancelled = cancel;
     }
 
+    /**
+     * Get the player who caused the infection.
+     * @return The Player who caused the infection
+     */
     public Player getCause() {
         return cause;
     }
