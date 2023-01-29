@@ -42,7 +42,7 @@ public class GameEndListener implements Listener {
             if(countdown.get() == 0) {
                 for(User user : userMap.values()) {
                     Player player = Bukkit.getPlayer(user.getUuid());
-                    if(player!= null) {
+                    if(player != null) {
                         player.sendMessage(Component.text("You have been teleported to spawn.").color(NamedTextColor.AQUA));
                         player.teleport(player.getWorld().getSpawnLocation());
                     }

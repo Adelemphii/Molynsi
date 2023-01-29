@@ -263,6 +263,10 @@ public class InfectionManager {
         return null;
     }
 
+    public boolean isGameRunning() {
+        return gameRunning;
+    }
+
     /**
      * Get a map of all the participating users
      * @return Map of all users

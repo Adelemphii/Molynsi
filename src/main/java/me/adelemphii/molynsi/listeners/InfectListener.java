@@ -43,6 +43,10 @@ public class InfectListener implements Listener {
             return;
         }
         Bukkit.getScheduler().runTaskTimer(plugin, task -> {
+            if(!plugin.getInfectionManager().isGameRunning()) {
+                return;
+            }
+
             infectSpreadTasks.put(player.getUniqueId(), task);
             ThreadLocalRandom random = ThreadLocalRandom.current();
 
